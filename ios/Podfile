@@ -1,6 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+
 platform :ios, '10.0'
 
 target 'Lainasin' do
@@ -11,6 +12,8 @@ target 'Lainasin' do
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
   )
+
+
 
   target 'LainasinTests' do
     inherit! :complete

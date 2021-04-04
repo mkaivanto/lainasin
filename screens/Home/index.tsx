@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/core';
 import React from 'react';
-import {Button, View, Text} from 'react-native';
+import {Button} from 'react-native-paper';
+import {View, Text} from 'react-native';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -8,9 +9,10 @@ const Home = () => {
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Home Screen</Text>
       <Button
-        title="Go to Expired"
-        onPress={() => navigation.navigate('Expired', {name: 'Jane'})}
-      />
+        mode="contained"
+        onPress={() => navigation.navigate('Expired', {name: 'Jane'})}>
+        Expired
+      </Button>
     </View>
   );
 };

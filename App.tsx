@@ -1,60 +1,53 @@
 import 'react-native-gesture-handler';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Button,
-  Alert,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {StyleSheet, Text} from 'react-native';
+import {IconButton} from 'react-native-paper';
 
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-
+import {
+  DefaultTheme,
+  Provider as PaperProvider,
+  Title,
+} from 'react-native-paper';
 import Home from './screens/Home';
 import Expired from './screens/Expired';
 
 const Stack = createStackNavigator();
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  //const isDarkMode = useColorScheme() === 'dark';
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+    },
   };
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            headerTitle: props => <Text>Lainasin</Text>,
-            headerRight: () => {
-              const navigation = useNavigation();
-              return (
-                <Button
-                  onPress={() => navigation.navigate('Expired', {name: 'Jane'})}
-                  title="Info"
-                />
-              );
-            },
-          }}
-        />
-        <Stack.Screen name="Expired" component={Expired} />
-      </Stack.Navigator>
+      <PaperProvider theme={theme}>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerTitle: props => <Title>Lainasin</Title>,
+              headerRight: () => {
+                const navigation = useNavigation();
+                return (
+                  <IconButton
+                    icon="bell-outline"
+                    onPress={() => navigation.navigate('Expired')}
+                  />
+                );
+              },
+            }}
+          />
+          <Stack.Screen name="Expired" component={Expired} />
+        </Stack.Navigator>
+      </PaperProvider>
     </NavigationContainer>
   );
 };
