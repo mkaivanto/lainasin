@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import * as React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import React from 'react';
+import {StyleSheet} from 'react-native';
 import {IconButton} from 'react-native-paper';
 
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
@@ -13,6 +12,9 @@ import {
 } from 'react-native-paper';
 import Home from './screens/Home';
 import Expired from './screens/Expired';
+
+import NavigationBar from './components/NavigationBar';
+import Form from './components/Form';
 
 const Stack = createStackNavigator();
 
@@ -28,24 +30,14 @@ const App = () => {
   return (
     <NavigationContainer>
       <PaperProvider theme={theme}>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              headerTitle: props => <Title>Lainasin</Title>,
-              headerRight: () => {
-                const navigation = useNavigation();
-                return (
-                  <IconButton
-                    icon="bell-outline"
-                    onPress={() => navigation.navigate('Expired')}
-                  />
-                );
-              },
-            }}
-          />
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            header: props => <NavigationBar {...props} />,
+          }}>
+          <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Expired" component={Expired} />
+          <Stack.Screen name="Form" component={Form} />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>

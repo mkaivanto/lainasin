@@ -7,11 +7,11 @@ const Home = () => {
   const navigation = useNavigation();
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
       <Button
+        icon="plus"
         mode="contained"
-        onPress={() => navigation.navigate('Expired', {name: 'Jane'})}>
-        Expired
+        onPress={() => navigation.navigate('Form')}>
+        Lisää uusi laina
       </Button>
     </View>
   );
