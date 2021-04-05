@@ -1,25 +1,34 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet} from 'react-native';
-import {IconButton} from 'react-native-paper';
 
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {
-  DefaultTheme,
-  Provider as PaperProvider,
-  Title,
-} from 'react-native-paper';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+
+import {DatabaseProvider} from './context/db';
 import Home from './screens/Home';
 import Expired from './screens/Expired';
 
 import NavigationBar from './components/NavigationBar';
 import Form from './components/Form';
 
-const Stack = createStackNavigator();
+const RootStack = createStackNavigator();
+const MainStack = createStackNavigator();
+
+const MainStackScreen = () => (
+  <MainStack.Navigator
+    headerMode="screen"
+    screenOptions={{
+      headerShown: true,
+      header: props => <NavigationBar {...props} />,
+    }}>
+    <MainStack.Screen name="Home" component={Home} />
+    <MainStack.Screen name="Expired" component={Expired} />
+  </MainStack.Navigator>
+);
 
 const App = () => {
-  //const isDarkMode = useColorScheme() === 'dark';
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -29,38 +38,23 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <PaperProvider theme={theme}>
-        <Stack.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            header: props => <NavigationBar {...props} />,
-          }}>
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Expired" component={Expired} />
-          <Stack.Screen name="Form" component={Form} />
-        </Stack.Navigator>
-      </PaperProvider>
+      <DatabaseProvider>
+        <PaperProvider theme={theme}>
+          <RootStack.Navigator
+            initialRouteName="Home"
+            mode="modal"
+            screenOptions={{headerShown: false}}>
+            <RootStack.Screen name="Main" component={MainStackScreen} />
+            <RootStack.Screen
+              name="Form"
+              component={Form}
+              options={{headerShown: false, header: undefined}}
+            />
+          </RootStack.Navigator>
+        </PaperProvider>
+      </DatabaseProvider>
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
