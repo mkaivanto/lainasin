@@ -11,7 +11,7 @@ const INITIAL_STATE = {
   id: null,
   borrower: '',
   item: '',
-  expires: add(new Date(), {weeks: 1}),
+  expires: add(new Date(), {weeks: 1}).getTime(),
   returned: false,
 };
 
@@ -20,7 +20,7 @@ const Form = () => {
   const navigation = useNavigation();
   const {createLoan} = useLoans();
 
-  const handleChangeValue = (name: string, value: string | Date) => {
+  const handleChangeValue = (name: string, value: string | number) => {
     setForm({
       ...form,
       [name]: value,
@@ -46,8 +46,8 @@ const Form = () => {
       />
 
       <DatePicker
-        value={form.expires}
-        setDate={date => handleChangeValue('expires', date)}
+        value={new Date(form.expires)}
+        setDate={date => handleChangeValue('expires', date.getTime())}
       />
       <Button icon="close" onPress={() => navigation.goBack()}>
         Peruuta

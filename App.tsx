@@ -2,6 +2,9 @@ import 'react-native-gesture-handler';
 import React, {useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 
+import store from './store';
+import {Provider} from 'react-redux';
+
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
@@ -37,23 +40,25 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer>
-      <DatabaseProvider>
-        <PaperProvider theme={theme}>
-          <RootStack.Navigator
-            initialRouteName="Home"
-            mode="modal"
-            screenOptions={{headerShown: false}}>
-            <RootStack.Screen name="Main" component={MainStackScreen} />
-            <RootStack.Screen
-              name="Form"
-              component={Form}
-              options={{headerShown: false, header: undefined}}
-            />
-          </RootStack.Navigator>
-        </PaperProvider>
-      </DatabaseProvider>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <DatabaseProvider>
+          <PaperProvider theme={theme}>
+            <RootStack.Navigator
+              initialRouteName="Home"
+              mode="modal"
+              screenOptions={{headerShown: false}}>
+              <RootStack.Screen name="Main" component={MainStackScreen} />
+              <RootStack.Screen
+                name="Form"
+                component={Form}
+                options={{headerShown: false, header: undefined}}
+              />
+            </RootStack.Navigator>
+          </PaperProvider>
+        </DatabaseProvider>
+      </NavigationContainer>
+    </Provider>
   );
 };
 

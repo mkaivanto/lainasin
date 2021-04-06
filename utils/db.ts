@@ -25,18 +25,6 @@ export const DATABASE = {
 
 let databaseInstance: SQLite.SQLiteDatabase | undefined;
 
-const errorCB = (err: SQLite.SQLError) => {
-  console.log('SQL Error: ' + err);
-};
-
-const successCB = () => {
-  console.log('SQL executed fine');
-};
-
-const openCB = () => {
-  console.log('Database OPENED');
-};
-
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
   if (databaseInstance !== undefined) {
     return Promise.resolve(databaseInstance);
@@ -78,7 +66,7 @@ async function close(): Promise<void> {
     console.log("[db] No need to close DB again - it's already closed");
     return;
   }
-  const status = await databaseInstance.close();
+  await databaseInstance.close();
   console.log('[db] Database closed.');
   databaseInstance = undefined;
 }

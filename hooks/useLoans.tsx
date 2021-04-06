@@ -1,19 +1,23 @@
-import {useState, useEffect} from 'react';
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import {setLoan} from '../store';
 import {Loan} from '../types/Loan';
 import {useDatabase} from '../context/db';
 
 // Hook for managing and accessing loans (CRUD)
 const useLoans = () => {
-  const [loans, setLoans] = useState<Loan[]>([]);
+  const dispatch = useDispatch();
   const database = useDatabase();
 
   useEffect(() => {
     refreshLoans();
   }, []);
 
-  const refreshLoans = () => {
+  const refreshLoans = (): Promise<void> => {
     // Query all lists from the DB, then store them as state
-    return database.getAllLoans().then(v => setLoans(v));
+    return database.getAllLoans().then(v => {
+      dispatch(setLoan(v));
+    });
   };
 
   const createLoan = (newLoan: Loan): Promise<void> => {
@@ -33,7 +37,6 @@ const useLoans = () => {
   };
 
   return {
-    loans,
     createLoan,
     deleteLoan,
     updateLoan,

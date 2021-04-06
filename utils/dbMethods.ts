@@ -12,7 +12,7 @@ const getResults = (results: ResultSet) => {
     const row = results.rows.item(i);
     const {id, borrower} = row;
     console.log(`[db] Loan to: ${borrower}, id: ${id}`);
-    loans.push({...row, expires: new Date(row.expires * 1000)} as Loan);
+    loans.push({...row, expires: row.expires * 1000} as Loan);
   }
   return loans;
 };
@@ -42,7 +42,7 @@ export const addLoan = async (loan: Loan): Promise<void> => {
     .then(db =>
       db.executeSql(
         'INSERT INTO Loan (borrower, item, expires, returned) VALUES (?, ?, ?, ?);',
-        [borrower, item, expires.getTime() / 1000, returned],
+        [borrower, item, expires / 1000, returned],
       ),
     )
     .then(([results]) => {
@@ -57,13 +57,7 @@ export const updateLoan = async (loan: Loan): Promise<void> => {
     .then(db =>
       db.executeSql(
         'UPDATE Loan SET borrower = ?, item = ?, expires = ?, returned = ? WHERE id = ?;',
-        [
-          loan.borrower,
-          loan.item,
-          loan.expires.getTime() / 1000,
-          loan.returned,
-          loan.id,
-        ],
+        [loan.borrower, loan.item, loan.expires / 1000, loan.returned, loan.id],
       ),
     )
     .then(([results]) => {
