@@ -1,4 +1,4 @@
-import {intervalToDuration, formatDuration, add} from 'date-fns';
+import {intervalToDuration, formatDuration, add, isAfter} from 'date-fns';
 import localeFI from 'date-fns/locale/fi';
 
 export const untilExpires = (date: Date) => {
@@ -11,4 +11,8 @@ export const untilExpires = (date: Date) => {
     format: ['years', 'months', 'weeks', 'days'],
     locale: localeFI,
   });
+};
+
+export const isLate = (date: Date) => {
+  return isAfter(new Date(), date);
 };
