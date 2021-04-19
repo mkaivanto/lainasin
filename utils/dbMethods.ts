@@ -37,12 +37,12 @@ export const getExpiringLoans = async (): Promise<Loan[]> => {
 };
 
 export const addLoan = async (loan: Loan): Promise<void> => {
-  const {borrower, expires, item, returned} = loan;
+  const {borrower, expires, item, returned, image} = loan;
   return getDatabase()
     .then(db =>
       db.executeSql(
-        'INSERT INTO Loan (borrower, item, expires, returned) VALUES (?, ?, ?, ?);',
-        [borrower, item, expires / 1000, returned],
+        'INSERT INTO Loan (borrower, item, expires, returned, image) VALUES (?, ?, ?, ?, ?);',
+        [borrower, item, expires / 1000, returned, image],
       ),
     )
     .then(([results]) => {
@@ -56,8 +56,15 @@ export const updateLoan = async (loan: Loan): Promise<void> => {
   return getDatabase()
     .then(db =>
       db.executeSql(
-        'UPDATE Loan SET borrower = ?, item = ?, expires = ?, returned = ? WHERE id = ?;',
-        [loan.borrower, loan.item, loan.expires / 1000, loan.returned, loan.id],
+        'UPDATE Loan SET borrower = ?, item = ?, expires = ?, returned = ?, image = ? WHERE id = ?;',
+        [
+          loan.borrower,
+          loan.item,
+          loan.expires / 1000,
+          loan.returned,
+          loan.image,
+          loan.id,
+        ],
       ),
     )
     .then(([results]) => {

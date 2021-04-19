@@ -1,12 +1,22 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useState} from 'react';
-import {SafeAreaView, View, Alert} from 'react-native';
-import {Button, TextInput, Title} from 'react-native-paper';
+import {SafeAreaView, View, Alert, Image, StyleSheet} from 'react-native';
+import {Button, IconButton, TextInput, Title} from 'react-native-paper';
 import {add} from 'date-fns';
 import useLoans from '../../hooks/useLoans';
 import {Loan} from '../../types/loan';
 import DatePicker from '../DatePicker';
-import {handleCamera, handleImageLibrary} from '../../utils/image';
+import {handleImagePicker} from '../../utils/image';
+
+const styles = StyleSheet.create({
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 24,
+    marginTop: 16,
+    marginBottom: 16,
+  },
+});
 
 const INITIAL_STATE = {
   id: null,
@@ -62,16 +72,37 @@ const Form = () => {
                 {text: 'Peruuta', style: 'cancel'},
                 {
                   text: 'Ota uusi kuva',
-                  onPress: () => {
-                    handleCamera();
-                  },
+                  onPress: () => handleImagePicker(true, handleChangeValue),
                 },
-                {text: 'Galleria', onPress: () => handleImageLibrary()},
+                {
+                  text: 'Galleria',
+                  onPress: () => handleImagePicker(false, handleChangeValue),
+                },
               ],
             )
           }>
           Lisää kuva
         </Button>
+        {form.image.length > 0 && (
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'row',
+            }}>
+            <Image
+              style={styles.image}
+              source={{
+                uri: `data:image/png;base64,${form.image}`,
+              }}
+            />
+            <IconButton
+              icon="close"
+              onPress={() => handleChangeValue('image', '')}>
+              {''}
+            </IconButton>
+          </View>
+        )}
         <View
           style={{
             display: 'flex',

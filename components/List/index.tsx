@@ -1,16 +1,38 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {format} from 'date-fns';
-import {Text, Alert} from 'react-native';
-import {Button, List, Card} from 'react-native-paper';
+import {TouchableOpacity, Text, Alert, Image, StyleSheet} from 'react-native';
+import {Button, List, Card, Portal, Modal} from 'react-native-paper';
 import useLoans from '../../hooks/useLoans';
 import {RootState} from '../../store';
 import {Loan} from '../../types/loan';
 import {isLate} from '../../utils/date';
 
+const styles = StyleSheet.create({
+  icon: {
+    width: 80,
+    height: 80,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 24,
+  },
+});
+
 const ListComponent = () => {
   const {updateLoan, deleteLoan} = useLoans();
   const loans = useSelector((state: RootState) => state.loans);
+  const [visible, setVisible] = React.useState(false);
+  const [image, setImage] = React.useState('');
+  const showModal = (imageToShow: string) => {
+    setImage(imageToShow);
+    setVisible(true);
+  };
+  const hideModal = () => {
+    setVisible(false);
+    setImage('');
+  };
 
   const handleDeleteLoan = (v: Loan) => {
     Alert.alert(
@@ -41,7 +63,20 @@ const ListComponent = () => {
                   <Text>Lainaaja: {v.borrower}</Text>
                 </>
               )}
-              left={() => <List.Icon icon="calendar-clock" />}
+              left={() =>
+                v.image ? (
+                  <TouchableOpacity onPress={() => showModal(v.image)}>
+                    <Image
+                      style={styles.image}
+                      source={{
+                        uri: `data:image/png;base64,${v.image}`,
+                      }}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <List.Icon style={styles.icon} icon="calendar-clock" />
+                )
+              }
               style={{
                 backgroundColor: isLate(new Date(v.expires))
                   ? '#FF8484'
@@ -61,6 +96,27 @@ const ListComponent = () => {
           </Card.Actions>
         </Card>
       ))}
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={{
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            backgroundColor: '#ffffff',
+            width: '80%',
+            height: '80%',
+            justifyContent: 'center',
+            display: 'flex',
+          }}>
+          <Image
+            style={{width: '100%', height: '100%'}}
+            source={{
+              uri: `data:image/png;base64,${image}`,
+            }}
+          />
+        </Modal>
+      </Portal>
     </List.Section>
   );
 };
