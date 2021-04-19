@@ -61,8 +61,9 @@ export class DatabaseInitialization {
         borrower TEXT NOT NULL,
         item TEXT NOT NULL,
         expires INTEGER NOT NULL,
-        returned INTEGER NOT NULL
-      );
+        returned INTEGER NOT NULL,
+        image TEXT NOT NULL DEFAULT ''
+        );
     `);
 
     // Version table

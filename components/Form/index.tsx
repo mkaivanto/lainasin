@@ -1,12 +1,12 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useState} from 'react';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {SafeAreaView, View} from 'react-native';
+import {SafeAreaView, View, Alert} from 'react-native';
 import {Button, TextInput, Title} from 'react-native-paper';
 import {add} from 'date-fns';
 import useLoans from '../../hooks/useLoans';
 import {Loan} from '../../types/loan';
 import DatePicker from '../DatePicker';
+import {handleCamera, handleImageLibrary} from '../../utils/image';
 
 const INITIAL_STATE = {
   id: null,
@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   item: '',
   expires: add(new Date(), {weeks: 1}).getTime(),
   returned: false,
+  image: '',
 };
 
 const Form = () => {
@@ -51,7 +52,24 @@ const Form = () => {
           value={new Date(form.expires)}
           setDate={date => handleChangeValue('expires', date.getTime())}
         />
-        <Button icon="file-image" onPress={() => console.log('image')}>
+        <Button
+          icon="file-image"
+          onPress={() =>
+            Alert.alert(
+              'Ota uusi tai käytä vanhaa kuvaa',
+              `Paina Ota uusi kuva jos haluat ottaa kameralla uuden kuvan. Paina Galleria jos haluat valita vanhan kuvan.`,
+              [
+                {text: 'Peruuta', style: 'cancel'},
+                {
+                  text: 'Ota uusi kuva',
+                  onPress: () => {
+                    handleCamera();
+                  },
+                },
+                {text: 'Galleria', onPress: () => handleImageLibrary()},
+              ],
+            )
+          }>
           Lisää kuva
         </Button>
         <View
