@@ -10,8 +10,11 @@ import {isLate} from '../../utils/date';
 
 const styles = StyleSheet.create({
   icon: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
+    backgroundColor: '#f6f8fa',
+    margin: 0,
+    borderRadius: 24,
   },
   image: {
     width: 100,
