@@ -9,6 +9,10 @@ import DatePicker from '../DatePicker';
 import {handleImagePicker} from '../../utils/image';
 
 const styles = StyleSheet.create({
+  textField: {
+    marginBottom: 16,
+  },
+  button: {marginTop: 16, marginBottom: 16},
   image: {
     width: 200,
     height: 200,
@@ -51,11 +55,13 @@ const Form = () => {
           label="Lainaaja"
           value={form.borrower}
           onChangeText={value => handleChangeValue('borrower', value)}
+          style={styles.textField}
         />
         <TextInput
           label="Lainattava"
           value={form.item}
           onChangeText={value => handleChangeValue('item', value)}
+          style={styles.textField}
         />
 
         <DatePicker
@@ -80,8 +86,9 @@ const Form = () => {
                 },
               ],
             )
-          }>
-          Lisää kuva
+          }
+          style={styles.button}>
+          {form.image.length > 0 ? 'Vaihda kuva' : 'Lisää kuva'}
         </Button>
         {form.image.length > 0 && (
           <View
@@ -89,6 +96,7 @@ const Form = () => {
               display: 'flex',
               justifyContent: 'center',
               flexDirection: 'row',
+              position: 'relative',
             }}>
             <Image
               style={styles.image}
@@ -98,7 +106,8 @@ const Form = () => {
             />
             <IconButton
               icon="close"
-              onPress={() => handleChangeValue('image', '')}>
+              onPress={() => handleChangeValue('image', '')}
+              style={{position: 'absolute', right: 0, top: 0}}>
               {''}
             </IconButton>
           </View>
