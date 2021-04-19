@@ -1,27 +1,11 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {format} from 'date-fns';
-import {TouchableOpacity, Text, Alert, Image, StyleSheet} from 'react-native';
-import {Button, List, Card, Portal, Modal} from 'react-native-paper';
+import {Alert, Image} from 'react-native';
+import {List, Portal, Modal} from 'react-native-paper';
 import useLoans from '../../hooks/useLoans';
 import {RootState} from '../../store';
 import {Loan} from '../../types/loan';
-import {isLate} from '../../utils/date';
-
-const styles = StyleSheet.create({
-  icon: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#f6f8fa',
-    margin: 0,
-    borderRadius: 24,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 24,
-  },
-});
+import ListItem from '../ListItem';
 
 const ListComponent = () => {
   const {updateLoan, deleteLoan} = useLoans();
@@ -56,48 +40,12 @@ const ListComponent = () => {
     <List.Section style={{width: '100%'}}>
       <List.Subheader>Lainat</List.Subheader>
       {loans.value.map(v => (
-        <Card key={v.id} style={{margin: 16}}>
-          <Card.Content>
-            <List.Item
-              title={v.item}
-              description={() => (
-                <>
-                  <Text>Erääntyy: {format(v.expires, 'd.M.yyyy')}</Text>
-                  <Text>Lainaaja: {v.borrower}</Text>
-                </>
-              )}
-              left={() =>
-                v.image ? (
-                  <TouchableOpacity onPress={() => showModal(v.image)}>
-                    <Image
-                      style={styles.image}
-                      source={{
-                        uri: `data:image/png;base64,${v.image}`,
-                      }}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <List.Icon style={styles.icon} icon="calendar-clock" />
-                )
-              }
-              style={{
-                backgroundColor: isLate(new Date(v.expires))
-                  ? '#FF8484'
-                  : 'transparent',
-              }}
-            />
-          </Card.Content>
-          <Card.Actions style={{justifyContent: 'space-between'}}>
-            <Button
-              icon={v.returned ? 'check' : 'radiobox-blank'}
-              onPress={() => updateLoan({...v, returned: !v.returned})}>
-              Palautettu
-            </Button>
-            <Button icon="delete" onPress={() => handleDeleteLoan(v)}>
-              Poista
-            </Button>
-          </Card.Actions>
-        </Card>
+        <ListItem
+          loan={v}
+          showImage={showModal}
+          handleUpdateLoan={updateLoan}
+          handleDeleteLoan={handleDeleteLoan}
+        />
       ))}
       <Portal>
         <Modal
