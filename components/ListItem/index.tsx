@@ -19,6 +19,13 @@ const styles = StyleSheet.create({
   },
 });
 
+const getLoanColor = (loan: Loan) => {
+  if (loan.returned) {
+    return '#90EE90';
+  }
+  return isLate(new Date(loan.expires)) ? '#FF8484' : 'transparent';
+};
+
 const ListItem = (props: {
   loan: Loan;
   showImage: (image: string) => void;
@@ -52,9 +59,8 @@ const ListItem = (props: {
             )
           }
           style={{
-            backgroundColor: isLate(new Date(loan.expires))
-              ? '#FF8484'
-              : 'transparent',
+            borderRadius: 8,
+            backgroundColor: getLoanColor(loan),
           }}
         />
       </Card.Content>

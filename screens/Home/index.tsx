@@ -4,11 +4,13 @@ import {View, Text, ScrollView, SafeAreaView} from 'react-native';
 import FloatingActionButton from '../../components/FloatingActionButton';
 import List from '../../components/List';
 import {RootState} from '../../store';
-import useLoans from '../../hooks/useLoans';
+import {sort} from '../../utils/sort';
 
 const Home = () => {
-  useLoans();
-  const loans = useSelector((state: RootState) => state.loans);
+  const loans = sort(
+    useSelector((state: RootState) => state.loans.loans),
+    'asc',
+  );
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -20,12 +22,12 @@ const Home = () => {
               justifyContent: 'center',
               width: '100%',
             }}>
-            {loans && loans.value.length < 1 ? (
+            {loans && loans.length < 1 ? (
               <Text>
                 Ei lainoja, lisää uusi painamalla "+ Lisää"-painiketta.
               </Text>
             ) : (
-              <List />
+              <List title="Kaikki lainat" loans={loans} />
             )}
           </View>
         </ScrollView>

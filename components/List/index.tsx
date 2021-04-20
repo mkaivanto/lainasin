@@ -7,9 +7,8 @@ import {RootState} from '../../store';
 import {Loan} from '../../types/loan';
 import ListItem from '../ListItem';
 
-const ListComponent = () => {
+const ListComponent = (props: {title?: string; loans: Loan[]}) => {
   const {updateLoan, deleteLoan} = useLoans();
-  const loans = useSelector((state: RootState) => state.loans);
   const [visible, setVisible] = React.useState(false);
   const [image, setImage] = React.useState('');
   const showModal = (imageToShow: string) => {
@@ -38,9 +37,10 @@ const ListComponent = () => {
 
   return (
     <List.Section style={{width: '100%'}}>
-      <List.Subheader>Lainat</List.Subheader>
-      {loans.value.map(v => (
+      <List.Subheader>{props.title || 'Lainat'}</List.Subheader>
+      {props.loans.map(v => (
         <ListItem
+          key={v.id}
           loan={v}
           showImage={showModal}
           handleUpdateLoan={updateLoan}

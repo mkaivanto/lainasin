@@ -1,7 +1,19 @@
+import React, {useState, useCallback, useMemo, useRef} from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Image,
+  StyleSheet,
+  Text,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import React, {useState} from 'react';
-import {SafeAreaView, View, Alert, Image, StyleSheet} from 'react-native';
 import {Button, IconButton, TextInput, Title} from 'react-native-paper';
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
 import {add} from 'date-fns';
 import useLoans from '../../hooks/useLoans';
 import {Loan} from '../../types/loan';
@@ -20,6 +32,10 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
   },
+  sheetContentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
 });
 
 const INITIAL_STATE = {
@@ -33,8 +49,14 @@ const INITIAL_STATE = {
 
 const Form = () => {
   const [form, setForm] = useState<Loan>(INITIAL_STATE);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
   const navigation = useNavigation();
   const {createLoan} = useLoans();
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   const handleChangeValue = (name: string, value: string | number) => {
     setForm({
@@ -48,88 +70,106 @@ const Form = () => {
   };
 
   return (
-    <SafeAreaView>
-      <View style={{margin: 16}}>
-        <Title>Lisää uusi laina</Title>
-        <TextInput
-          label="Lainaaja"
-          value={form.borrower}
-          onChangeText={value => handleChangeValue('borrower', value)}
-          style={styles.textField}
-        />
-        <TextInput
-          label="Lainattava"
-          value={form.item}
-          onChangeText={value => handleChangeValue('item', value)}
-          style={styles.textField}
-        />
+    <BottomSheetModalProvider>
+      <SafeAreaView>
+        <ScrollView style={{margin: 16, height: '100%'}}>
+          <Title>Lisää uusi laina</Title>
+          <TextInput
+            label="Lainaaja"
+            value={form.borrower}
+            onChangeText={value => handleChangeValue('borrower', value)}
+            style={styles.textField}
+          />
+          <TextInput
+            label="Lainattava"
+            value={form.item}
+            onChangeText={value => handleChangeValue('item', value)}
+            style={styles.textField}
+          />
 
-        <DatePicker
-          value={new Date(form.expires)}
-          setDate={date => handleChangeValue('expires', date.getTime())}
-        />
-        <Button
-          icon="file-image"
-          onPress={() =>
-            Alert.alert(
-              'Ota uusi tai käytä vanhaa kuvaa',
-              `Paina Ota uusi kuva jos haluat ottaa kameralla uuden kuvan. Paina Galleria jos haluat valita vanhan kuvan.`,
-              [
-                {text: 'Peruuta', style: 'cancel'},
-                {
-                  text: 'Ota uusi kuva',
-                  onPress: () => handleImagePicker(true, handleChangeValue),
-                },
-                {
-                  text: 'Galleria',
-                  onPress: () => handleImagePicker(false, handleChangeValue),
-                },
-              ],
-            )
-          }
-          style={styles.button}>
-          {form.image.length > 0 ? 'Vaihda kuva' : 'Lisää kuva'}
-        </Button>
-        {form.image.length > 0 && (
+          <DatePicker
+            value={new Date(form.expires)}
+            setDate={date => handleChangeValue('expires', date.getTime())}
+          />
+          <Button
+            icon="file-image"
+            onPress={() => bottomSheetRef.current?.present()}
+            style={styles.button}>
+            {form.image.length > 0 ? 'Vaihda kuva' : 'Lisää kuva'}
+          </Button>
+          {form.image.length > 0 && (
+            <View
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                position: 'relative',
+              }}>
+              <Image
+                style={styles.image}
+                source={{
+                  uri: `data:image/png;base64,${form.image}`,
+                }}
+              />
+              <IconButton
+                icon="close"
+                onPress={() => handleChangeValue('image', '')}
+                style={{position: 'absolute', right: 0, top: 0}}>
+                {''}
+              </IconButton>
+            </View>
+          )}
           <View
             style={{
               display: 'flex',
-              justifyContent: 'center',
               flexDirection: 'row',
-              position: 'relative',
+              justifyContent: 'space-between',
             }}>
-            <Image
-              style={styles.image}
-              source={{
-                uri: `data:image/png;base64,${form.image}`,
-              }}
-            />
-            <IconButton
-              icon="close"
-              onPress={() => handleChangeValue('image', '')}
-              style={{position: 'absolute', right: 0, top: 0}}>
-              {''}
-            </IconButton>
+            <Button icon="close" onPress={() => navigation.goBack()}>
+              Peruuta
+            </Button>
+            <Button
+              mode="contained"
+              icon="content-save"
+              onPress={() => handleCreateLoan()}>
+              Tallenna
+            </Button>
           </View>
-        )}
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <Button icon="close" onPress={() => navigation.goBack()}>
-            Peruuta
-          </Button>
-          <Button
-            mode="contained"
-            icon="content-save"
-            onPress={() => handleCreateLoan()}>
-            Tallenna
-          </Button>
-        </View>
-      </View>
-    </SafeAreaView>
+        </ScrollView>
+        <BottomSheetModal
+          ref={bottomSheetRef}
+          index={1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}
+          backdropComponent={BottomSheetBackdrop}>
+          <View style={styles.sheetContentContainer}>
+            <Button
+              style={{marginTop: 24}}
+              onPress={() => {
+                bottomSheetRef.current?.close();
+                handleImagePicker(true, handleChangeValue);
+              }}>
+              Kamera
+            </Button>
+            <Button
+              style={{marginTop: 24}}
+              onPress={() => {
+                bottomSheetRef.current?.close();
+                handleImagePicker(false, handleChangeValue);
+              }}>
+              Puhelimen kirjasto
+            </Button>
+            <Button
+              style={{marginTop: 24}}
+              mode="outlined"
+              icon="close"
+              onPress={() => bottomSheetRef.current?.close()}>
+              Sulje
+            </Button>
+          </View>
+        </BottomSheetModal>
+      </SafeAreaView>
+    </BottomSheetModalProvider>
   );
 };
 

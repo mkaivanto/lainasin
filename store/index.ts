@@ -6,11 +6,11 @@ import {Loan} from '../types/loan';
 export const loanSlice = createSlice({
   name: 'loan',
   initialState: {
-    value: [] as Loan[],
+    loans: [] as Loan[],
   },
   reducers: {
     setLoan: (state, action: PayloadAction<Loan[]>) => {
-      state.value = action.payload;
+      state.loans = action.payload;
     },
   },
 });
