@@ -1,18 +1,20 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 
-import {Button, View, Text, ScrollView, SafeAreaView} from 'react-native';
+import {View, Text, ScrollView, SafeAreaView} from 'react-native';
 import {RootState} from '../../store';
 import List from '../../components/List';
 import {isLate} from '../../utils/date';
 import {sort} from '../../utils/sort';
 
 const Expired = () => {
+  const sortCfg = useSelector((state: RootState) => state.sort.sort);
   const loans = sort(
     useSelector((state: RootState) => state.loans.loans).filter(
       v => isLate(new Date(v.expires)) && !v.returned,
     ),
-    'asc',
+    sortCfg.sortBy,
+    sortCfg.direction,
   );
   return (
     <SafeAreaView style={{flex: 1}}>

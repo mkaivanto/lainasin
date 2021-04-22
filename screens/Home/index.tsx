@@ -9,9 +9,11 @@ import useLoans from '../../hooks/useLoans';
 
 const Home = () => {
   useLoans();
+  const sortCfg = useSelector((state: RootState) => state.sort.sort);
   const loans = sort(
     useSelector((state: RootState) => state.loans.loans),
-    'asc',
+    sortCfg.sortBy,
+    sortCfg.direction,
   );
   return (
     <>
