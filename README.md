@@ -26,6 +26,7 @@ An app to keep track of what items you loaned to whom and when you are expecting
 TODO:
 
 - local push notifications
+- android support
 
 ## To develop
 
