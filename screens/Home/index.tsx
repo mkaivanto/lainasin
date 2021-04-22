@@ -5,8 +5,10 @@ import FloatingActionButton from '../../components/FloatingActionButton';
 import List from '../../components/List';
 import {RootState} from '../../store';
 import {sort} from '../../utils/sort';
+import useLoans from '../../hooks/useLoans';
 
 const Home = () => {
+  useLoans();
   const loans = sort(
     useSelector((state: RootState) => state.loans.loans),
     'asc',
