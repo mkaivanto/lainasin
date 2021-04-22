@@ -22,6 +22,7 @@ An app to keep track of what items you loaned to whom and when you are expecting
 - Remove loans
 - Sort loans
 - Separate screen for expired loans
+- Tap on loan image for full-screen view
 
 TODO:
 
