@@ -2,6 +2,8 @@ import 'react-native-gesture-handler';
 import React, {useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 
+import PushNotification from 'react-native-push-notification';
+
 import store from './store';
 import {Provider} from 'react-redux';
 
@@ -15,6 +17,9 @@ import Expired from './screens/Expired';
 
 import NavigationBar from './components/NavigationBar';
 import Form from './components/Form';
+import configurePushNotification from './utils/pushNotifInit';
+
+configurePushNotification();
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
