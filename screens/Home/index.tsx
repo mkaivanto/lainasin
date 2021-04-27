@@ -1,11 +1,12 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {View, Text, ScrollView, SafeAreaView} from 'react-native';
+import {View, ScrollView, SafeAreaView} from 'react-native';
 import FloatingActionButton from '../../components/FloatingActionButton';
 import List from '../../components/List';
 import {RootState} from '../../store';
 import {sort} from '../../utils/sort';
 import useLoans from '../../hooks/useLoans';
+import NoResults from '../../components/NoResults';
 
 const Home = () => {
   useLoans();
@@ -15,10 +16,16 @@ const Home = () => {
     sortCfg.sortBy,
     sortCfg.direction,
   );
+
+  const noLoans = !loans || (loans && loans.length < 1);
+
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <ScrollView>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: noLoans ? 1 : undefined,
+          }}>
           <View
             style={{
               flex: 1,
@@ -26,10 +33,8 @@ const Home = () => {
               justifyContent: 'center',
               width: '100%',
             }}>
-            {loans && loans.length < 1 ? (
-              <Text>
-                Ei lainoja, lisää uusi painamalla "+ Lisää"-painiketta.
-              </Text>
+            {noLoans ? (
+              <NoResults text='Ei lainoja, lisää uusi painamalla "+ Lisää"-painiketta.' />
             ) : (
               <List title="Kaikki lainat" loans={loans} />
             )}
