@@ -6,6 +6,10 @@ import useLoans from '../../hooks/useLoans';
 import {RootState} from '../../store';
 import {Loan} from '../../types/loan';
 import ListItem from '../ListItem';
+import {
+  removeScheduledNotification,
+  scheduleNotification,
+} from '../../utils/pushNotif';
 
 const ListComponent = (props: {title?: string; loans: Loan[]}) => {
   const {updateLoan, deleteLoan} = useLoans();
@@ -20,6 +24,16 @@ const ListComponent = (props: {title?: string; loans: Loan[]}) => {
     setImage('');
   };
 
+  const handleUpdateLoan = (v: Loan) => {
+    updateLoan(v).then(() => {
+      if (v.returned) removeScheduledNotification(v.id);
+      else {
+        removeScheduledNotification(v.id);
+        scheduleNotification(v);
+      }
+    });
+  };
+
   const handleDeleteLoan = (v: Loan) => {
     Alert.alert(
       'Oletko varma?',
@@ -30,7 +44,11 @@ const ListComponent = (props: {title?: string; loans: Loan[]}) => {
           onPress: () => {},
           style: 'cancel',
         },
-        {text: 'OK', onPress: () => deleteLoan(v)},
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteLoan(v).then(() => removeScheduledNotification(v.id)),
+        },
       ],
     );
   };
@@ -43,7 +61,7 @@ const ListComponent = (props: {title?: string; loans: Loan[]}) => {
           key={v.id}
           loan={v}
           showImage={showModal}
-          handleUpdateLoan={updateLoan}
+          handleUpdateLoan={handleUpdateLoan}
           handleDeleteLoan={handleDeleteLoan}
         />
       ))}

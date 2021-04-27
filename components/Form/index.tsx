@@ -19,6 +19,7 @@ import useLoans from '../../hooks/useLoans';
 import {Loan} from '../../types/loan';
 import DatePicker from '../DatePicker';
 import {handleImagePicker} from '../../utils/image';
+import {scheduleNotification} from '../../utils/pushNotif';
 
 const styles = StyleSheet.create({
   textField: {
@@ -66,7 +67,9 @@ const Form = () => {
   };
 
   const handleCreateLoan = () => {
-    createLoan(form).then(() => navigation.goBack());
+    createLoan(form)
+      .then((loanId: number) => scheduleNotification({...form, id: loanId}))
+      .then(() => navigation.goBack());
   };
 
   return (

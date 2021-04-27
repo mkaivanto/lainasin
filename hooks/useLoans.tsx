@@ -14,14 +14,17 @@ const useLoans = () => {
   }, []);
 
   const refreshLoans = (): Promise<void> => {
-    // Query all lists from the DB, then store them as state
+    // Query all loans from the DB, then store them to state
     return database.getAllLoans().then(v => {
       dispatch(setLoan(v));
     });
   };
 
-  const createLoan = (newLoan: Loan): Promise<void> => {
-    return database.addLoan(newLoan).then(() => refreshLoans());
+  const createLoan = (newLoan: Loan): Promise<number> => {
+    return database.addLoan(newLoan).then((loanId: number) => {
+      refreshLoans();
+      return loanId;
+    });
   };
 
   const deleteLoan = (loanToDelete: Loan): Promise<void> => {

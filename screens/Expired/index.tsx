@@ -16,6 +16,7 @@ const Expired = () => {
     sortCfg.sortBy,
     sortCfg.direction,
   );
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>

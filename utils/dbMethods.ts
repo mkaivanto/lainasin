@@ -36,7 +36,11 @@ export const getExpiringLoans = async (): Promise<Loan[]> => {
     .then(([results]) => getResults(results));
 };
 
-export const addLoan = async (loan: Loan): Promise<void> => {
+/**
+ * @param loan
+ * @returns id of the loan
+ */
+export const addLoan = async (loan: Loan): Promise<number> => {
   const {borrower, expires, item, returned, image} = loan;
   return getDatabase()
     .then(db =>
@@ -49,6 +53,7 @@ export const addLoan = async (loan: Loan): Promise<void> => {
       console.log(
         `[db] Loan "${borrower}" created successfully with id: ${results.insertId}`,
       );
+      return results.insertId;
     });
 };
 
