@@ -9,6 +9,7 @@ An app to keep track of what items you loaned to whom and when you are expecting
 - React Native Paper Dates for choosing a day
 - React Navigation for routes
 - React Native Image Picker for handling camera & library
+- React Native Push Notifications for local notifications about expired loans
 
 ## Features
 
@@ -26,8 +27,8 @@ An app to keep track of what items you loaned to whom and when you are expecting
 
 TODO:
 
-- local push notifications
 - android support
+- tests
 
 ## To develop
 
@@ -35,4 +36,4 @@ TODO:
 
 2. `yarn run start`
 
-3. and in a separate terminal `yarn run ios`
+3. to start the XCODE simulator `yarn run ios`
